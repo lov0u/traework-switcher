@@ -1,54 +1,120 @@
----
-name: "trae-work-account-switcher"
-description: "Trae Work 桌面端账号切换工具。管理多账号、每个账号绑定独立机器码、一键切换无需验证码。当用户需要切换 Trae Work 账号、管理多个 Trae 账号、或要求绑定不同机器码时调用。"
----
+﻿# TARE 多账号切换（免登陆）
 
-# Trae Work 账号切换工具
+> Trae Work 桌面端多账号管理工具，每个账号绑定独立机器码，一键切换无需验证码。
 
-管理 Trae Work (TRAE SOLO CN) 多账号，每个账号绑定独立机器码，一键切换无需验证码。
+## 简介
 
-## 工作原理
+如果你有多个 Trae Work 账号，每次切换都要重新登录、输验证码，非常麻烦。这个工具帮你把每个账号的登录状态完整保存下来，切换时自动恢复，**免去验证码、免去重新登录**，秒切。
 
-1. **保存账号快照**：保存每个账号的完整配置（storage.json、machineid、TinyStorage、Local Storage 等）
-2. **切换流程**：关闭 Trae Work → 写入目标账号配置 → 清理缓存 → 启动 Trae Work
-3. **机器码独立**：每个账号自动分配唯一 UUID 机器码，切换时自动写入
+每个账号还会自动分配独立的设备标识（机器码），避免多账号被关联。
 
-## 文件位置
+## 功能特性
 
-- **GUI 图形界面版**: `trae-account-switcher\TraeWorkAccountSwitcher-GUI.ps1`
-- **命令行版**: `trae-account-switcher\TraeWorkAccountSwitcher.ps1`
-- **快捷启动**: `trae-account-switcher\启动账号切换工具.bat`（双击运行）
+- **一键切换** - 选中账号点切换，自动关闭 TW → 恢复登录状态 → 重新启动
+- **免验证码** - 完整备份 Cookies、state.vscdb、trae-webview 等登录态，切换后直接登录
+- **独立机器码** - 每个账号绑定唯一设备标识，重置 6 层 ID（machineid / telemetry / aha / TinyStorage / MachineGuid / webview）
+- **新建账号** - 自动重置设备标识，用于注册新账号领取积分
+- **GUI 图形界面** - 立体卡片设计、圆角阴影按钮、日志折叠、DPI 感知
+- **自定义 EXE 启动器** - 内嵌图标，双击即用
 
-## 使用方法
+## 截图
 
-### 方式一：GUI 图形界面（推荐）
-1. 双击 `启动账号切换工具.bat`
-2. 点击「📥 添加当前账号」捕获当前 Trae Work 登录状态
-3. 在列表中选中账号，点击「🔄 切换到选中账号」
-4. 工具自动关闭 Trae Work → 切换配置 → 重启 Trae Work
+![TARE多账号切换 GUI](tare-switcher.ico)
 
-### 方式二：命令行
-```powershell
-# 打开交互菜单
-.\TraeWorkAccountSwitcher.ps1
+## 快速开始
 
-# 直接切换
-.\TraeWorkAccountSwitcher.ps1 -Command switch -Name "账号1"
+### 方式一：EXE 启动器（推荐）
 
-# 列出所有账号
-.\TraeWorkAccountSwitcher.ps1 -Command list
-```
+1. 双击 `TRAEWORK切换登录.exe`
+2. 工具自动以管理员权限启动 GUI 界面
+
+### 方式二：桌面快捷方式
+
+1. 右键 `TRAEWORK切换登录.exe` → 发送到 → 桌面快捷方式
+2. 以后双击桌面快捷方式即可
+
+### 方式三：批处理启动
+
+双击 `TRAEWORK切换登录.bat`（会自动请求管理员权限）
+
+## 使用说明
+
+### 第一次使用：添加账号
+
+1. 先正常打开 Trae Work，登录你的第一个账号
+2. 启动本工具，点击 **「新建账号（重置设备）」**
+3. 输入账号名称（如"工作号"）
+4. 工具会自动关闭 TW → 重置设备标识 → 备份当前登录状态 → 重新启动 TW
+5. 在 TW 中登录新账号，然后回来点击 **「保存当前登录」**
+
+### 日常使用：切换账号
+
+1. 启动本工具
+2. 在账号列表中选中要切换到的账号
+3. 点击 **「切换到选中账号」**
+4. 工具自动完成：关闭 TW → 恢复目标账号配置 → 启动 TW
+5. TW 打开后已自动登录，无需验证码
+
+### 添加更多账号
+
+重复"第一次使用"的步骤即可。每次新建账号会自动重置设备标识。
+
+### 删除账号
+
+选中账号 → 点击 **「删除选中账号」**，会同时删除该账号的配置备份。
+
+## 文件说明
+
+| 文件 | 说明 |
+|------|------|
+| `TRAEWORK切换登录.exe` | EXE 启动器（内嵌自定义图标，推荐） |
+| `TraeWorkAccountSwitcher-GUI.ps1` | GUI 图形界面主程序 |
+| `TraeWorkAccountSwitcher.ps1` | 命令行版本 |
+| `TRAEWORK切换登录.bat` | 批处理启动器（自动请求管理员权限） |
+| `launch.vbs` | VBS 静默启动脚本 |
+| `tare-switcher.ico` | 自定义图标文件 |
 
 ## 数据存储
 
-- **账号配置**: `%APPDATA%\TraeWorkSwitcher\accounts.json`
-- **账号配置备份**: `%APPDATA%\TraeWorkSwitcher\profiles\<id>\`
-- **操作日志**: `%APPDATA%\TraeWorkSwitcher\switcher.log`
-- **Trae Work 数据**: `%APPDATA%\TRAE SOLO CN\`
+账号数据存储在 `%APPDATA%\TraeWorkSwitcher\` 目录下，**不在程序目录中**：
+
+| 路径 | 内容 |
+|------|------|
+| `accounts.json` | 账号列表和机器码 |
+| `profiles\<id>\` | 每个账号的完整登录状态备份 |
+| `switcher.log` | 操作日志 |
 
 ## 注意事项
 
-- 切换账号前请保存工作内容，Trae Work 会自动关闭并重启
-- 首次添加账号时，请先登录目标账号再点击添加
-- 每个账号自动分配唯一机器码，也可手动指定
-- 删除账号会同时删除对应的配置备份，不可恢复
+- 切换账号前请保存工作内容，Trae Work 会被强制关闭并重启
+- 首次添加账号时，请先在 TW 中登录目标账号再点击保存
+- 重置 MachineGuid 需要管理员权限，工具会自动请求
+- 每个账号的登录状态需要单独保存一次，之后切换无需再次登录
+
+---
+
+## 关于作者
+
+### ra0.cn - AI 工具导航站
+
+> 更多 AI 工具、效率工具、开发者资源，尽在 **[ra0.cn](https://ra0.cn)**
+
+[ra0.cn](https://ra0.cn) 是一个专注于 AI 工具和效率工具的导航站，收录了数百个优质 AI 工具和开发资源，帮助你发现好用的工具、提升工作效率。
+
+#### 站点特色
+
+- **AI 工具大全** - 收录国内外优质 AI 工具，分类清晰，持续更新
+- **效率工具推荐** - 开发者必备工具、设计工具、生产力工具一网打尽
+- **每日更新** - 新工具持续收录，不错过任何一个好工具
+
+#### 访问站点
+
+**[https://ra0.cn](https://ra0.cn)**
+
+如果你觉得这个工具好用，欢迎访问 [ra0.cn](https://ra0.cn) 发现更多实用工具！
+
+---
+
+## License
+
+MIT License - 可自由使用、修改、分发
