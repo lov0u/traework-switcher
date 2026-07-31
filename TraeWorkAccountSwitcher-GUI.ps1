@@ -684,10 +684,10 @@ function Create-MainForm {
     $info.Controls.Add($Script:AccountCountLabel)
 
     # Register button (right side of info card, 3D orange)
-    $btnRegister = New-3DButton "注册TRAE账号" 520 86 244 50 $C_BTN_REGISTER {
+    $btnRegister = New-3DButton "点击注册领取5000积分" 520 86 244 50 $C_BTN_REGISTER {
         Start-Process "https://www.trae.cn/work-fission/NXPJLUUKLJVK"
-        Add-LogLine "已打开 TRAE 注册页面"
-    } -FontSize 11 -Radius 12 -PanelBg $C_BG_PAGE
+        Add-LogLine "已打开 TRAE 注册页面（含5000积分）"
+    } -FontSize 10 -Radius 12 -PanelBg $C_BG_PAGE
     $form.Controls.Add($btnRegister)
 
     # ===== Left: Account List Card =====
@@ -797,7 +797,7 @@ function Create-MainForm {
     $helpLabel.Font = [System.Drawing.Font]::new("Microsoft YaHei UI", 8)
     $helpLabel.ForeColor = $C_TEXT_MUTED
     $helpLabel.Location = [System.Drawing.Point]::new(250, 448)
-    $helpLabel.Size = [System.Drawing.Size]::new(514, 72)
+    $helpLabel.Size = [System.Drawing.Size]::new(370, 72)
     $helpLabel.BackColor = $C_BG_PAGE
     $form.Controls.Add($helpLabel)
 
@@ -813,6 +813,24 @@ function Create-MainForm {
     $Script:LogTextBox.ForeColor = [System.Drawing.Color]::FromArgb(180, 230, 180)
     $Script:LogTextBox.Visible = $false
     $form.Controls.Add($Script:LogTextBox)
+
+    # ===== AI Tools Navigation Link (bottom-right) =====
+    $aiNavLink = New-Object System.Windows.Forms.LinkLabel
+    $aiNavLink.Text = "AI工具导航 ->"
+    $aiNavLink.Font = [System.Drawing.Font]::new("Microsoft YaHei UI", 9, [System.Drawing.FontStyle]::Bold)
+    $aiNavLink.ForeColor = $C_FROST_PRIMARY
+    $aiNavLink.LinkColor = $C_FROST_PRIMARY
+    $aiNavLink.ActiveLinkColor = $C_FROST_DANGER
+    $aiNavLink.VisitedLinkColor = $C_FROST_PRIMARY
+    $aiNavLink.Location = [System.Drawing.Point]::new(640, 480)
+    $aiNavLink.Size = [System.Drawing.Size]::new(120, 20)
+    $aiNavLink.BackColor = $C_BG_PAGE
+    $aiNavLink.Cursor = [System.Windows.Forms.Cursors]::Hand
+    $aiNavLink.Add_LinkClicked({
+        Start-Process "https://ra0.cn"
+        Add-LogLine "已打开 ra0.cn AI工具导航"
+    })
+    $form.Controls.Add($aiNavLink)
 
     $Script:MainForm = $form
     return $form
