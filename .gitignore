@@ -1,0 +1,19 @@
+﻿# 账号数据（敏感信息，绝对不能提交）
+accounts.json
+switcher.log
+profiles/
+
+# 运行时生成的文件
+*.lnk
+__pycache__/
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+*~
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+.DS_Store
